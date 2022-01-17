@@ -35,7 +35,7 @@ import modelo.Tablero;
 /**
  * FXML Controller class
  *
- * @author John
+ * @author Grupo_10
  */
 public class JuegoController implements Initializable {
 
@@ -221,21 +221,22 @@ public class JuegoController implements Initializable {
             default:
                 break;
         }
+        this.empate = false;
     }
     
     private void terminarJuego(Button[][] botones){
         if(!botones[0][0].getText().equals("") && !botones[1][1].getText().equals("") && !botones[2][2].getText().equals("") &&
                 botones[0][0].getText().equals(botones[1][1].getText()) && botones[0][0].getText().equals(botones[2][2].getText())){
-            this.isOver = true;
+            this.isOver = true;            
+            this.lnD1.setVisible(isOver);            
+            desactivarCasillas();        
             this.empate = false;
-            this.lnD1.setVisible(isOver);
-            desactivarCasillas();            
         }else if(botones[0][2].getText().equals(botones[1][1].getText()) && !botones[1][1].getText().equals("") && !botones[2][0].getText().equals("") &&
                 !botones[0][2].getText().equals("") && botones[0][2].getText().equals(botones[2][0].getText())){
-            this.isOver = true;
-            this.empate = false;
+            this.isOver = true;            
             this.lnD2.setVisible(isOver);
             desactivarCasillas();
+            this.empate = false;
         }
         if (isOver && !empate){
             this.btnRendirse.setDisable(isOver);
@@ -243,6 +244,7 @@ public class JuegoController implements Initializable {
             String ganador = jugador2.isJugando()?jugador1.getNombre()+" ha perdido \n"+jugador2.getNombre()+" ha ganado":jugador2.getNombre()+" ha perdido \n"+jugador1.getNombre()+" ha ganado";
             alertar(ganador);
         }else if(isOver && empate){
+            System.out.println("IsOver" + isOver+ " Empate:"+empate);
             String ganador = "No hay ganadores, ha sido un empate";
             alertar(ganador);
         }
@@ -302,29 +304,35 @@ public class JuegoController implements Initializable {
 
     @FXML
     private void guardar(ActionEvent event) {
+        
     }
 
     @FXML
     private void regresar(ActionEvent event) {
-        Parent root;        
-        try {
-            root = FXMLLoader.load(getClass().getResource("/ventanas/Inicio.fxml"));
-            Stage stage = new Stage();
-            Scene scene = new Scene(root);        
-            stage.setScene(scene);
-            stage.show();
-            Stage myStage = (Stage) this.A1.getScene().getWindow();
-            myStage.close();
-        } catch (IOException ex) {
-            Logger.getLogger(AjustesController.class.getName()).log(Level.SEVERE, null, ex);
+        if (!isOver){
+            alertar("Hay un juego en curso, rindete o termina el juego");
+        }else{
+            Parent root;        
+            try {
+                root = FXMLLoader.load(getClass().getResource("/ventanas/Inicio.fxml"));
+                Stage stage = new Stage();
+                Scene scene = new Scene(root);        
+                stage.setScene(scene);
+                stage.show();
+                Stage myStage = (Stage) this.A1.getScene().getWindow();
+                myStage.close();
+            } catch (IOException ex) {
+                Logger.getLogger(AjustesController.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
+        
     }
     
     @FXML
     private void rendirse(ActionEvent event){
         this.isOver = true;
         desactivarCasillas();
-        String ganador = jugador1.isJugando()?jugador1.getNombre()+" ha perdido":jugador2.getNombre()+" ha ganado";
+        String ganador = jugador1.isJugando()?jugador1.getNombre()+" ha perdido\n"+jugador2.getNombre()+" ha ganado":jugador2.getNombre()+" ha perdido\n"+jugador1.getNombre()+" ha ganado";
         alertar("¡Te has rendido!\n"+ganador);
     }
     
@@ -348,8 +356,7 @@ public class JuegoController implements Initializable {
             while(!isOver){
                 System.out.print("");
                 waits(4);
-                if(jugadorSolo.isJugando()){       
-                    //Platform.runLater(()->txtJugadorTurno.setText(jugadorSolo.getNombre()));
+                if(jugadorSolo.isJugando()){                           
                     System.out.println(tablero);
                     System.out.println(jugadorSolo);
                     Tablero actual = new Tablero(jugadorContrario.getSimbolo(), tablero.getTablero());

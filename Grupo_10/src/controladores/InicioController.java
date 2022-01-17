@@ -21,7 +21,7 @@ import modelo.Jugador;
 
 /**
  *
- * @author John
+ * @author Grupo_10
  */
 public class InicioController implements Initializable {
     

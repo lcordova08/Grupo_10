@@ -28,7 +28,7 @@ import modelo.Jugador;
 /**
  * FXML Controller class
  *
- * @author John
+ * @author Grupo_10
  */
 public class AjustesController implements Initializable {
 
@@ -145,4 +145,3 @@ public class AjustesController implements Initializable {
     }
     
 }
-
