@@ -22,9 +22,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.effect.Glow;
+import javafx.scene.effect.Bloom;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import modelo.Jugador;
@@ -92,6 +94,7 @@ public class JuegoController implements Initializable {
     private boolean esPC;
     private boolean esMultiJugador;
     private int numTurnos;
+    private boolean empate;
     /**
      * Initializes the controller class.
      * @param url
@@ -102,35 +105,49 @@ public class JuegoController implements Initializable {
         // TODO
         juegoController = this;
         isOver = false;  
+        numTurnos=0;
+        empate = true;
     }    
 
     public void recibirParametros(Jugador jugador1, Jugador jugador2, boolean esPC, boolean esMultiJugador){
+        this.esPC = esPC;
         this.jugador1 = jugador1;
-        this.jugador2 = jugador2;  
+        this.jugador2 = jugador2;
+        this.esMultiJugador = esMultiJugador;
         if(jugador1.isJugando())
             tablero = new Tablero(jugador1.getSimbolo());
         else
-            tablero = new Tablero(jugador2.getSimbolo());
-        System.out.println(jugador1);
-        System.out.println(jugador2);
+            tablero = new Tablero(jugador2.getSimbolo());        
         jugar();
-        if(!esPC & !esMultiJugador)
+        if(!esPC & !esMultiJugador){
             jugarPC(jugador1,jugador2);
+            if(jugador1.isJugando())
+                this.btnPista.setDisable(true);
+        }                        
         else if(esPC){
             jugarPC(jugador1,jugador2);
             jugarPC(jugador2,jugador1);
+            this.btnPista.setDisable(true);
+            this.btnRendirse.setDisable(true);
         }        
         if(jugador1.isJugando())
-            txtJugadorTurno.setText(jugador1.getNombre());
+            txtJugadorTurno.setText("("+jugador1.getSimbolo()+") "+jugador1.getNombre());
         else            
-            txtJugadorTurno.setText(jugador2.getNombre());
+            txtJugadorTurno.setText("("+jugador2.getSimbolo()+") "+jugador2.getNombre());
             
     }
     
+    public void borrarEfectos(){
+        List<Button> bt = Arrays.asList(A1,B1,C1,A2,B2,C2,A3,B3,C3);
+        bt.forEach(e->{
+            e.setEffect(null);
+        });
+    }
     public void jugar(){
         List<Button> bt = Arrays.asList(A1,B1,C1,A2,B2,C2,A3,B3,C3);
         bt.forEach(e->{
-            e.setOnAction(ft->{                
+            e.setOnAction(ft->{    
+                borrarEfectos();
                 e.setDisable(true);
                 System.out.println(e.getId());
                 String fc = Arrays.toString(e.getId().split("-"));
@@ -138,21 +155,19 @@ public class JuegoController implements Initializable {
                 int f = Integer.parseInt(fc.substring(1,2));
                 int c  = Integer.parseInt(fc.substring(4,5));
                 if(jugador1.isJugando()){
+                    if(!esPC && !esMultiJugador)
+                        this.btnPista.setDisable(false);
+                    
                     this.tablero.getTablero()[f][c] = jugador1.getSimbolo();
-                    e.setText(jugador1.getSimbolo());
-                    jugador1.setJugando(false);
-                    jugador2.setJugando(true);
-                    if(!isOver)
-                        Platform.runLater(()->txtJugadorTurno.setText(jugador2.getNombre()));
+                    e.setText(jugador1.getSimbolo());                        
                 }                    
-                else{
+                else{                    
+                    if(!esPC && !esMultiJugador)
+                        this.btnPista.setDisable(true);
                     this.tablero.getTablero()[f][c] = jugador2.getSimbolo();
-                    e.setText(jugador2.getSimbolo());
-                    jugador1.setJugando(true);
-                    jugador2.setJugando(false);
-                    if(!isOver)
-                        Platform.runLater(()->txtJugadorTurno.setText(jugador1.getNombre()));
-                }
+                    e.setText(jugador2.getSimbolo());                    
+                    
+                }                                    
                 comprobarEstadoTablero();                
             });
             
@@ -169,14 +184,23 @@ public class JuegoController implements Initializable {
         Button[][] botones = {{A1,B1,C1},{A2,B2,C2},{A3,B3,C3}};
         for (int i = 0; i < 3; i++) {
             if(!botones[i][0].getText().equals("") && botones[i][0].getText().equals(botones[i][2].getText()) && !botones[i][1].getText().equals("") 
-                    && botones[i][0].getText().equals(botones[i][1].getText()) && !botones[i][2].getText().equals("")){
-                desactivarCasillasEspecificas(lnF1,lnF2,lnF3,i);   
-            }
+                    && botones[i][0].getText().equals(botones[i][1].getText()) && !botones[i][2].getText().equals(""))
+                desactivarCasillasEspecificas(lnF1,lnF2,lnF3,i);               
             else if(!botones[0][i].getText().equals("") && botones[0][i].getText().equals(botones[2][i].getText()) && botones[0][i].getText().equals(botones[1][i].getText())){
                 desactivarCasillasEspecificas(lnC1,lnC2,lnC3,i);                                
             }                
-        }
+        }           
         terminarJuego(botones);
+        System.out.println(isOver);
+        if(!isOver && jugador2.isJugando()){            
+            jugador1.setJugando(true);
+            jugador2.setJugando(false);
+            Platform.runLater(()->txtJugadorTurno.setText("("+jugador1.getSimbolo()+") "+jugador1.getNombre()));                    
+        }else if (!isOver && jugador1.isJugando()){            
+            jugador1.setJugando(false);
+            jugador2.setJugando(true);
+            Platform.runLater(()->txtJugadorTurno.setText("("+jugador2.getSimbolo()+") "+jugador2.getNombre()));                       
+        }
     }
     
     private void desactivarCasillasEspecificas(Line l1, Line l2, Line l3, int i){
@@ -203,14 +227,27 @@ public class JuegoController implements Initializable {
         if(!botones[0][0].getText().equals("") && !botones[1][1].getText().equals("") && !botones[2][2].getText().equals("") &&
                 botones[0][0].getText().equals(botones[1][1].getText()) && botones[0][0].getText().equals(botones[2][2].getText())){
             this.isOver = true;
+            this.empate = false;
             this.lnD1.setVisible(isOver);
-            desactivarCasillas();
+            desactivarCasillas();            
         }else if(botones[0][2].getText().equals(botones[1][1].getText()) && !botones[1][1].getText().equals("") && !botones[2][0].getText().equals("") &&
                 !botones[0][2].getText().equals("") && botones[0][2].getText().equals(botones[2][0].getText())){
             this.isOver = true;
+            this.empate = false;
             this.lnD2.setVisible(isOver);
             desactivarCasillas();
         }
+        if (isOver && !empate){
+            this.btnRendirse.setDisable(isOver);
+            this.btnPista.setDisable(isOver);    
+            String ganador = jugador2.isJugando()?jugador1.getNombre()+" ha perdido \n"+jugador2.getNombre()+" ha ganado":jugador2.getNombre()+" ha perdido \n"+jugador1.getNombre()+" ha ganado";
+            alertar(ganador);
+        }else if(isOver && empate){
+            String ganador = "No hay ganadores, ha sido un empate";
+            alertar(ganador);
+        }
+        
+        
     }
     
     private void desactivarCasillas(){
@@ -246,13 +283,21 @@ public class JuegoController implements Initializable {
         Tablero actual = new Tablero(jugador1.isJugando()?jugador1.getSimbolo():jugador2.getSimbolo(), tablero.getTablero());
         Tree<Tablero> arbol = actual.hacerArbol();
         Tablero max  = encontrarMaximo(arbol);
-        Button[][] botones = {{A1,B1,C1},{A2,B2,C2},{A3,B3,C3}};
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if(!max.getTablero()[i][j].equals(tablero.getTablero()[i][j]))
-                    botones[i][j].setEffect(new Glow());
+        if(max!=null){
+            Button[][] botones = {{A1,B1,C1},{A2,B2,C2},{A3,B3,C3}};
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {                    
+                    if(!max.getTablero()[i][j].equals(tablero.getTablero()[i][j])){
+                        Bloom bloom = new Bloom();
+                        bloom.setThreshold(0.1);
+                        botones[i][j].setEffect(bloom);
+
+                    }
+
+                }
             }
         }
+        
     }
 
     @FXML
@@ -279,6 +324,14 @@ public class JuegoController implements Initializable {
     private void rendirse(ActionEvent event){
         this.isOver = true;
         desactivarCasillas();
+        String ganador = jugador1.isJugando()?jugador1.getNombre()+" ha perdido":jugador2.getNombre()+" ha ganado";
+        alertar("¡Te has rendido!\n"+ganador);
+    }
+    
+    public void alertar(String mensaje){
+        Alert a = new Alert(AlertType.INFORMATION);
+        a.setContentText(mensaje);
+        a.show();
     }
     
     class juegoComputadora implements Runnable{        
@@ -323,8 +376,6 @@ public class JuegoController implements Initializable {
         }
     }
         
-    }
-        
-    
+    }         
 }
 }

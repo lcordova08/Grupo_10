@@ -49,15 +49,16 @@ public class Tablero {
                         Tablero nuevo = new Tablero(XO.equals("X")?"O":"X",estado1.getTablero());
                         if("".equals(estado1.tablero[k][l])){
                             nuevo.tablero[k][l] = XO.equals("X")?"O":"X";
-                            nuevo.calcularUtilidad();
+                            nuevo.calcularUtilidad();                            
                             tree.agregar(nuevo, estado1);
                             utilidades.add(nuevo);
+                            //System.out.println("Utilidades: "+utilidades);
                         }                        
                     }
                 }
                 if(!utilidades.isEmpty()){
                     Tablero min = obtenerMin(utilidades);
-                    tree.encontrarNodo(tree.getRoot().get(0),estado1).getContent().setUtilidad(min.utilidad);                
+                    tree.encontrarNodo(tree.getRoot().get(0),estado1).getContent().setUtilidad(min.getUtilidad());                
                 }else
                     return null;                
             }
@@ -67,7 +68,7 @@ public class Tablero {
     
     private Tablero obtenerMin(List<Tablero> objList){
         Tablero minObject = Collections.min(objList, (Tablero o1, Tablero o2) -> {
-            return o1.utilidad-o2.utilidad;
+            return o1.getUtilidad()-o2.getUtilidad();
         });
         return minObject;
     }
