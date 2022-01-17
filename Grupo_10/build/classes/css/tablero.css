@@ -1,0 +1,40 @@
+
+.inner-bg{
+    -fx-background-color: rgba(33, 33, 33, 0.5);
+    -fx-background-radius: 10;
+}
+
+
+.text-field{
+   -fx-font-size: 13px;
+   -fx-font-family: "Arial Black";
+   -fx-fill: black;
+   -fx-text-fill: black;
+}
+
+
+.label{   
+   -fx-font-family: "Arial Black";
+   -fx-font-size: 12px;
+}
+
+.button{
+   -fx-font-family: "Arial Black";
+   -fx-font-size: 25px;
+   -fx-padding: 15px;
+   -fx-border-radius: 4px;
+   -fx-background-color: #10663A;
+   -fx-fill: whitesmoke;
+   -fx-text-fill: whitesmoke;
+}
+
+#laterales{
+   -fx-font-family: "Arial Black";
+   -fx-font-size: 12px;
+   -fx-padding: 5px;
+   -fx-border-radius: 20px;
+   -fx-background-color: white;
+   -fx-pref-tile-width: 70px;
+   -fx-fill: blue;
+   -fx-text-fill: blue;
+}
