@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="446.0" prefWidth="330.0" style="-fx-background-color: #10663A;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.InicioController">
+   <children>
+      <HBox alignment="CENTER" prefHeight="120.0" prefWidth="330.0" style="-fx-background-color: #A5F58F;">
+         <children>
+            <ImageView fitHeight="105.0" fitWidth="307.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../recursos/logo.png" />
+               </image>
+            </ImageView>
+         </children>
+      </HBox>
+      <VBox alignment="CENTER" layoutX="34.0" layoutY="120.0" prefHeight="334.0" prefWidth="262.0" spacing="10.0" AnchorPane.bottomAnchor="-8.0" AnchorPane.leftAnchor="34.0" AnchorPane.rightAnchor="34.0" AnchorPane.topAnchor="120.0">
+         <children>
+            <Button fx:id="btn_Jugador" mnemonicParsing="false" onAction="#switchToJugador" prefHeight="50.0" prefWidth="260.0" text="Un Jugador" VBox.vgrow="ALWAYS">
+               <font>
+                  <Font name="Barlow Condensed Black" size="24.0" />
+               </font>
+            </Button>
+            <GridPane prefHeight="30.0" prefWidth="252.0">
+              <columnConstraints>
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Button fx:id="btn_Multijugador" mnemonicParsing="false" onAction="#switchToMultijugador" prefHeight="47.0" prefWidth="130.0" text="Multi">
+                     <font>
+                        <Font name="Barlow Condensed Black" size="24.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="btn_PC" mnemonicParsing="false" onAction="#switchToPCvsPC" prefHeight="50.0" prefWidth="130.0" text="PC VS PC" GridPane.columnIndex="1">
+                     <font>
+                        <Font name="Barlow Condensed Black" size="24.0" />
+                     </font>
+                  </Button>
+               </children>
+            </GridPane>
+            <Button fx:id="btn_partidas_guardadas" mnemonicParsing="false" onAction="#switchPartidasJugadas" prefHeight="50.0" prefWidth="260.0" text="Partidas Guardadas" VBox.vgrow="ALWAYS">
+               <font>
+                  <Font name="Barlow Condensed Black" size="24.0" />
+               </font>
+            </Button>
+            <Button fx:id="btn_Salir" mnemonicParsing="false" onAction="#cerrarJuego" prefHeight="50.0" prefWidth="260.0" text="Salir" VBox.vgrow="ALWAYS">
+               <font>
+                  <Font name="Barlow Condensed Black" size="24.0" />
+               </font>
+            </Button>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
