@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="Grupo_10.jar" size="299844" download="eager" />
+    <jar href="Grupo_10.jar" size="312575" download="eager" />
   </resources>
   <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="Grupo_10" >
     <param name="requiredFXVersion" value="8.0+"/>

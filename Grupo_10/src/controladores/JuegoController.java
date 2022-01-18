@@ -8,6 +8,7 @@ package controladores;
 import TDA.Tree;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -31,6 +32,7 @@ import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import modelo.Jugador;
 import modelo.Tablero;
+import modelo.TableroJugado;
 
 /**
  * FXML Controller class
@@ -95,6 +97,7 @@ public class JuegoController implements Initializable {
     private boolean esMultiJugador;
     private int numTurnos;
     private boolean empate;
+    private boolean isGuardado;
     /**
      * Initializes the controller class.
      * @param url
@@ -118,22 +121,7 @@ public class JuegoController implements Initializable {
             tablero = new Tablero(jugador1.getSimbolo());
         else
             tablero = new Tablero(jugador2.getSimbolo());        
-        jugar();
-        if(!esPC & !esMultiJugador){
-            jugarPC(jugador1,jugador2);
-            if(jugador1.isJugando())
-                this.btnPista.setDisable(true);
-        }                        
-        else if(esPC){
-            jugarPC(jugador1,jugador2);
-            jugarPC(jugador2,jugador1);
-            this.btnPista.setDisable(true);
-            this.btnRendirse.setDisable(true);
-        }        
-        if(jugador1.isJugando())
-            txtJugadorTurno.setText("("+jugador1.getSimbolo()+") "+jugador1.getNombre());
-        else            
-            txtJugadorTurno.setText("("+jugador2.getSimbolo()+") "+jugador2.getNombre());
+        configurarJuego();
             
     }
     
@@ -280,6 +268,52 @@ public class JuegoController implements Initializable {
         }
     }    
     
+    public void cargarJuego(TableroJugado tableroJugado){
+        this.tablero = tableroJugado.getTablero();
+        this.jugador1 = tableroJugado.getJugador1();
+        this.jugador2 = tableroJugado.getJugador2();
+        this.esPC = tableroJugado.isIsPC();
+        this.esMultiJugador = tableroJugado.isIsMulti();
+        this.empate = tableroJugado.isIsEmpate();    
+        this.isOver = tableroJugado.isIsOver();
+        configurarJuego();
+    }
+    
+    private void configurarJuego(){
+        jugar();
+        if(!esPC & !esMultiJugador){
+            jugarPC(jugador1,jugador2);
+            if(jugador1.isJugando())
+                this.btnPista.setDisable(true);
+        }                        
+        else if(esPC){
+            jugarPC(jugador1,jugador2);
+            jugarPC(jugador2,jugador1);
+            this.btnPista.setDisable(true);
+            this.btnRendirse.setDisable(true);
+        }        
+        if(jugador1.isJugando())
+            txtJugadorTurno.setText("("+jugador1.getSimbolo()+") "+jugador1.getNombre());
+        else            
+            txtJugadorTurno.setText("("+jugador2.getSimbolo()+") "+jugador2.getNombre());
+        marcarGuardadas();
+    }
+    
+    private void marcarGuardadas(){
+        Button[][] botones = {{A1,B1,C1},{A2,B2,C2},{A3,B3,C3}};
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                String marca = this.tablero.getTablero()[i][j];                   
+                if(!marca.isEmpty()){
+                    botones[i][j].setText(marca);                 
+                    botones[i][j].setDisable(true);
+                }
+                    
+                else
+                    botones[i][j].setText("");    
+            }
+        }
+    }
     @FXML
     private void pista(ActionEvent event) {
         Tablero actual = new Tablero(jugador1.isJugando()?jugador1.getSimbolo():jugador2.getSimbolo(), tablero.getTablero());
@@ -304,13 +338,20 @@ public class JuegoController implements Initializable {
 
     @FXML
     private void guardar(ActionEvent event) {
-        
+        Jugador ganador = null;
+        if(isOver && !empate){
+            ganador = jugador1.isJugando()?jugador1:jugador2;
+        }        
+        TableroJugado tableroJugada = new TableroJugado(this.tablero, jugador1, jugador2, esPC, this.esMultiJugador, empate, ganador, LocalDate.now());
+        this.isGuardado = true;      
+        tableroJugada.guardarPartida();
+        alertar("Se ha guardado esta partida!");
     }
 
     @FXML
     private void regresar(ActionEvent event) {
-        if (!isOver){
-            alertar("Hay un juego en curso, rindete o termina el juego");
+        if (!isOver && !this.isGuardado){
+            alertar("Hay un juego en curso, rindete, guarda o termina el juego");
         }else{
             Parent root;        
             try {

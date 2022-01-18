@@ -53,6 +53,20 @@ public class InicioController implements Initializable {
 
     @FXML
     private void switchPartidasJugadas(ActionEvent event) {
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ventanas/PartidasJugadas.fxml"));
+            Parent root = loader.load();            
+            Scene scene = new Scene(root);
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.setResizable(false);            
+            stage.show();
+            Stage myStage = (Stage) this.btn_Salir.getScene().getWindow();
+            myStage.close();
+            
+        }catch(IOException e){
+            System.out.println(e.getMessage());
+        }   
     }
 
     @FXML

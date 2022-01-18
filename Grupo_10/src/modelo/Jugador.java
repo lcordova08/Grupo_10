@@ -5,11 +5,14 @@
  */
 package modelo;
 
+import java.io.Serializable;
+import java.util.Objects;
+
 /**
  *
  * @author Grupo_10
  */
-public class Jugador {
+public class Jugador implements Serializable{
     private String nombre;
     private String simbolo;
     private boolean jugando;
@@ -54,5 +57,32 @@ public class Jugador {
     @Override
     public String toString() {
         return "Jugador{" + "nombre=" + nombre + ", simbolo=" + simbolo + ", jugando=" + jugando + ", puntaje=" + puntaje + '}';
-    }       
+    }     
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 11 * hash + Objects.hashCode(this.simbolo);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Jugador other = (Jugador) obj;
+        if (!Objects.equals(this.simbolo, other.simbolo)) {
+            return false;
+        }
+        return true;
+    }
+    
+    
 }

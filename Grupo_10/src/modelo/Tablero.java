@@ -10,12 +10,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import TDA.Tree;
+import java.io.Serializable;
 
 /**
  *
  * @author Grupo_10
  */
-public class Tablero {
+public class Tablero implements Serializable{
     private String[][] tablero = new String[3][3];
     private String XO;
     private int utilidad;
@@ -51,8 +52,7 @@ public class Tablero {
                             nuevo.tablero[k][l] = XO.equals("X")?"O":"X";
                             nuevo.calcularUtilidad();                            
                             tree.agregar(nuevo, estado1);
-                            utilidades.add(nuevo);
-                            //System.out.println("Utilidades: "+utilidades);
+                            utilidades.add(nuevo);                            
                         }                        
                     }
                 }
